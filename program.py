@@ -35,7 +35,7 @@ for command in sql_script.split(";"):
         try:
             cursor.execute(command)
         except Exception as e:
-            print(f"⚠️ Błąd w zapytaniu:\n{command[:100]}...\n{e}\n")
+            print(f"Błąd w zapytaniu:\n{command[:100]}...\n{e}\n")
 
 #wczytanie danych do pandas
 df_ankiety = pd.read_sql_query("SELECT * FROM ankiety", conn)
@@ -57,5 +57,5 @@ print(df.head())
 print("\n Średni wiek uczestników wg płci:")
 print(df.groupby("plec")["wiek"].mean())
 
-# --- KROK 6: Zamknięcie bazy ---
+#zamknięcie bazy
 conn.close()
