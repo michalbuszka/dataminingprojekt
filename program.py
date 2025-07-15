@@ -5,10 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-print("Rozpoczynanie skryptu analizy danych NAC...")
-
-# --- Sekcja Ładowania Danych i Przygotowania ---
-print("\n--- 1. Ładowanie i przygotowanie danych ---")
 
 # Wczytanie skryptu SQL
 try:
@@ -113,7 +109,7 @@ print(f"Połączono dane: final_df ma {len(final_df)} wierszy.")
 df_analysis = final_df.dropna(subset=['win_ratio']).copy()
 print(f"Usunięto wiersze z brakującymi 'win_ratio'. Do analizy pozostało {len(df_analysis)} wierszy.")
 
-# --- Sekcja Analizy Statystycznej ---
+# Analiza
 print("\n--- 2. Analiza statystyczna (Mediacja i Moderacja) ---")
 
 # Analiza mediacji: Zmienna niezależna (X) = 'Areola a', mediator (M) = 'Areola to Nipple delta E', zmienna zależna (Y) = 'win_ratio'
@@ -144,15 +140,11 @@ model_4 = smf.ols('win_ratio ~ Q("Areola a") * Q("Nipple to areola ratio")', dat
 print("\n--- Model 4: Y na X, Mod oraz termin interakcji ---")
 print(model_4.summary())
 
-# --- Sekcja Wizualizacji Wyników ---
-print("\n--- 3. Wizualizacja Wyników ---")
+#wykresy
 
-# Ustawienia stylu wykresów
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = [12, 8]
 plt.rcParams['figure.autolayout'] = True # Automatyczne dopasowanie układu, aby etykiety się nie nakładały
-
-print("\nGenerowanie wykresów dla analizy mediacji...")
 
 # Wykres 1: win_ratio vs Areola a (Y vs X)
 plt.figure(figsize=(10, 6))
@@ -175,7 +167,7 @@ plt.tight_layout() # Dopasuj układ
 plt.show()
 
 # Wykres 3: win_ratio vs Areola a z uwzględnieniem Areola to Nipple delta E (Y vs X z M)
-# Użyjemy koloru do reprezentacji mediatora
+
 plt.figure(figsize=(10, 6))
 sns.scatterplot(x=df_analysis['Areola a'], y=df_analysis['win_ratio'], hue=df_analysis['Areola to Nipple delta E'], palette='viridis', alpha=0.7)
 plt.title('Zależność Win Ratio od Areola a (kolor: Areola to Nipple delta E) (Model 3)')
@@ -186,20 +178,8 @@ plt.grid(True, linestyle='--', alpha=0.7)
 plt.tight_layout() # Dopasuj układ
 plt.show()
 
-print("\nGenerowanie wykresów dla analizy moderacji...")
-
-# Wykres 4: Interakcja Areola a * Nipple to areola ratio na Win Ratio
-g = sns.lmplot(x="Areola a", y="win_ratio", hue="Nipple to areola ratio", data=df_analysis,
-               scatter_kws={'alpha':0.6}, line_kws={'alpha':0.7}, height=6, aspect=1.5, palette='coolwarm')
-g.set_axis_labels("Areola a", "Win Ratio")
-g.set_titles("Moderacja Nipple to areola ratio na zależności Win Ratio od Areola a (Model 4)")
-plt.grid(True, linestyle='--', alpha=0.7)
-plt.tight_layout()
-plt.show()
-
-
-# Alternatywny wykres interakcji, pokazujący linie regresji dla różnych poziomów moderatora
-# (np. 10. i 90. percentyla)
+# wykres interakcji, pokazujący linie regresji dla różnych poziomów moderatora
+# (dla 10. i 90. percentyla)
 plt.figure(figsize=(10, 6))
 
 # Rysowanie wszystkich punktów jako szarych
